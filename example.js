@@ -4,14 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-
-const dbConfig = require('../config/db.config');
-
+const config = require('../config/config');
 const db = {};
-const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
-  dialect: dbConfig.dialect,
-  host: dbConfig.host,
-  logging: false
+
+const sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, {
+  dialect: 'mysql',
+  host: config.db.host
 });
 
 fs
@@ -30,23 +28,7 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database Connected Successfully');
-  }).catch(err => {
-    console.log('Unable to connect database', err);
-  });
-
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// db.sequelize.sync({ force: false })
-db.sequelize.sync()
-  .then(async () => {
-
-    console.log('Yes re-sync done!');
-  })
-  .catch(err => {
-    console.log('Unable to sync', err);
-  });
 module.exports = db;
